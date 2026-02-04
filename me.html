@@ -42,7 +42,7 @@
       <section class="content">
         <div class="card">
           <div class="cardTitle">
-            <h1>출결/숙제/성적</h1>
+            <h1>출결/숙제</h1>
             <span class="badge yellow"><strong>조회</strong></span>
           </div>
 
@@ -58,8 +58,8 @@
                 <div class="kv" id="attSummary"></div>
               </div>
               <div class="card" style="box-shadow:none;">
-                <div class="meta">최근 성적</div>
-                <div class="kv" id="gradeSummary"></div>
+                <div class="meta">숙제(최근 10건)</div>
+                <div class="kv" id="hwSummary"></div>
               </div>
             </div>
 
@@ -78,16 +78,37 @@
               <thead><tr><th>마감</th><th>제목</th><th>상태</th></tr></thead>
               <tbody></tbody>
             </table>
-
-            <hr class="sep"/>
-
-            <div class="meta">성적</div>
-            <table class="table" id="grTable">
-              <thead><tr><th>시험</th><th>점수</th><th>만점</th></tr></thead>
-              <tbody></tbody>
-            </table>
           </div>
         </div>
+
+        <div class="card" id="gradeCard" style="display:none;">
+          <div class="cardTitle">
+            <h1>성적 (영어)</h1>
+            <span class="badge">내신 5등급 · 모의 9등급</span>
+          </div>
+
+          <div class="grid2">
+            <div>
+              <div class="meta">내신(최근)</div>
+              <table class="table" id="schoolTbl">
+                <thead><tr><th>학년/학기</th><th>시험</th><th>점수</th><th>등급</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div>
+              <div class="meta">모의고사 등급 그래프</div>
+              <div class="chartWrap">
+                <canvas id="mockChart" width="520" height="240" style="width:100%; height:auto;"></canvas>
+              </div>
+              <div class="meta" style="margin-top:10px;">모의고사 요약</div>
+              <table class="table" id="mockTbl">
+                <thead><tr><th>월</th><th>등급</th><th>원점수</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </section>
     </main>
   </div>

@@ -62,7 +62,7 @@
             <button class="btn ghost" id="goMeBtn">내 정보</button>
           </div>
 
-          <div class="note" id="hint">코드는 보통 1회용이야. 틀리면 선생님한테 새 코드 받아.</div>
+          <div class="note">코드는 보통 1회용이야. 틀리면 선생님한테 새 코드 받아.</div>
         </div>
       </section>
     </main>
@@ -82,7 +82,6 @@
     code.addEventListener("input", sync);
     name.addEventListener("input", sync);
     sync();
-
     document.getElementById("goMeBtn").addEventListener("click", ()=>location.href="me.html");
   </script>
 </body>
