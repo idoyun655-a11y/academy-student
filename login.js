@@ -1,6 +1,5 @@
 import { supabase, qs, toast } from "./supabase_client.js";
 
-// ✅ 이메일 없이: 버튼 누르면 익명 계정 생성(자동 가입)
 async function ensureAnonSession() {
   const { data: { session } } = await supabase.auth.getSession();
   if (session) return session;
@@ -12,10 +11,8 @@ async function ensureAnonSession() {
 
 qs("#linkBtn").addEventListener("click", async () => {
   try {
-    // 1) 익명 로그인(자동 가입)
     await ensureAnonSession();
 
-    // 2) 코드로 연결
     const p_role = qs("#role").value;      // student / parent
     const p_name = qs("#name").value.trim();
     const p_code = qs("#code").value.trim();
@@ -33,11 +30,7 @@ qs("#linkBtn").addEventListener("click", async () => {
   }
 });
 
-// (선택) 이미 세션이 있고 연결된 상태면 바로 내정보로
+// 페이지 들어오면 자동으로 익명 세션 확보(UX 좋아짐)
 (async () => {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) {
-    // 그냥 me로 보내도 됨 (연결 안 됐으면 me에서 안내 뜸)
-    // location.href = "me.html";
-  }
+  try { await ensureAnonSession(); } catch {}
 })();
