@@ -1,36 +1,89 @@
-import { supabase, qs, toast } from "./supabase_client.js";
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>코드 연결 | 학원</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brandMark"></div>
+        <div>
+          <div class="brandTitle">학원 시스템</div>
+          <div class="brandSub">학생/부모</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <div class="navLabel">메뉴</div>
+        <a class="active" href="login.html"><span class="dot"></span>코드 연결</a>
+        <a href="me.html"><span class="dot"></span>내 정보</a>
+      </nav>
+    </aside>
 
-async function ensureAnonSession() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) return session;
+    <main class="main">
+      <header class="topbar">
+        <div class="tabs">
+          <button class="tab active">코드 연결</button>
+        </div>
+        <div class="topRight">
+          <span class="badge yellow"><strong>이메일 없음</strong></span>
+        </div>
+      </header>
 
-  const { data, error } = await supabase.auth.signInAnonymously();
-  if (error) throw error;
-  return data.session;
-}
+      <section class="content">
+        <div class="card">
+          <div class="cardTitle">
+            <h1>코드로 연결</h1>
+            <span class="badge"><strong>1회</strong>만</span>
+          </div>
 
-qs("#linkBtn").addEventListener("click", async () => {
-  try {
-    await ensureAnonSession();
+          <div class="grid2">
+            <div>
+              <label class="label">역할</label>
+              <select id="role" class="input">
+                <option value="student">학생</option>
+                <option value="parent">부모</option>
+              </select>
+            </div>
+            <div>
+              <label class="label">이름</label>
+              <input id="name" class="input" placeholder="예: 이도윤" autocomplete="name" />
+            </div>
+          </div>
 
-    const p_role = qs("#role").value;      // student / parent
-    const p_name = qs("#name").value.trim();
-    const p_code = qs("#code").value.trim();
+          <label class="label">연결 코드</label>
+          <input id="code" class="input" placeholder="8자리 코드" maxlength="12" autocapitalize="characters" />
 
-    if (!p_name) return toast("이름 입력!");
-    if (!p_code) return toast("코드 입력!");
+          <div class="row">
+            <button class="btn" id="linkBtn" disabled>연결하기</button>
+            <button class="btn ghost" id="goMeBtn">내 정보</button>
+          </div>
 
-    const { error } = await supabase.rpc("redeem_access_code", { p_code, p_role, p_name });
-    if (error) throw error;
+          <div class="note" id="hint">코드는 보통 1회용이야. 틀리면 선생님한테 새 코드 받아.</div>
+        </div>
+      </section>
+    </main>
+  </div>
 
-    toast("연결 완료!");
-    location.href = "me.html";
-  } catch (e) {
-    toast(e.message || String(e));
-  }
-});
+  <script type="module" src="login.js"></script>
+  <script>
+    const code = document.getElementById("code");
+    const name = document.getElementById("name");
+    const btn = document.getElementById("linkBtn");
 
-// 페이지 들어오면 자동으로 익명 세션 확보(UX 좋아짐)
-(async () => {
-  try { await ensureAnonSession(); } catch {}
-})();
+    function sync(){
+      code.value = code.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+      const ok = name.value.trim().length >= 2 && code.value.trim().length >= 6;
+      btn.disabled = !ok;
+    }
+    code.addEventListener("input", sync);
+    name.addEventListener("input", sync);
+    sync();
+
+    document.getElementById("goMeBtn").addEventListener("click", ()=>location.href="me.html");
+  </script>
+</body>
+</html>

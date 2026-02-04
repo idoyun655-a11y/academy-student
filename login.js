@@ -13,7 +13,7 @@ qs("#linkBtn").addEventListener("click", async () => {
   try {
     await ensureAnonSession();
 
-    const p_role = qs("#role").value;      // student / parent
+    const p_role = qs("#role").value;
     const p_name = qs("#name").value.trim();
     const p_code = qs("#code").value.trim();
 
@@ -30,7 +30,6 @@ qs("#linkBtn").addEventListener("click", async () => {
   }
 });
 
-// 페이지 들어오면 자동으로 익명 세션 확보(UX 좋아짐)
 (async () => {
   try { await ensureAnonSession(); } catch {}
 })();

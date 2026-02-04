@@ -16,7 +16,6 @@ async function ensureSession(){
   const { data: { session } } = await supabase.auth.getSession();
   if (session) return session;
 
-  // 익명 자동 로그인(혹시 세션이 날아갔을 때 대비)
   const { data, error } = await supabase.auth.signInAnonymously();
   if (error) throw error;
   return data.session;
@@ -42,14 +41,12 @@ async function getLinkedStudentIds(user_id){
 }
 
 async function loadStudentData(student_id){
-  // 출결
-  const { data: att, error: e1 } = await supabase
+  const { data: att } = await supabase
     .from("attendance")
     .select("date,status,note")
     .eq("student_id", student_id)
     .order("date", { ascending:false })
     .limit(30);
-  if (e1) throw e1;
 
   const counts = { 출석:0, 지각:0, 결석:0, 조퇴:0 };
   const attBody = qs("#attTable tbody"); attBody.innerHTML = "";
@@ -60,27 +57,21 @@ async function loadStudentData(student_id){
   qs("#attSummary").innerHTML =
     `<b>출석</b> ${counts.출석} · <b>지각</b> ${counts.지각} · <b>결석</b> ${counts.결석} · <b>조퇴</b> ${counts.조퇴}`;
 
-  // 숙제
-  const { data: hw, error: e2 } = await supabase
+  const { data: hw } = await supabase
     .from("homework")
     .select("due_date,title,status")
     .eq("student_id", student_id)
     .order("created_at", { ascending:false })
     .limit(30);
-  if (e2) throw e2;
-
   const hwBody = qs("#hwTable tbody"); hwBody.innerHTML = "";
   hw.forEach(h=> hwBody.appendChild(trRow([h.due_date || "", h.title, h.status])));
 
-  // 성적
-  const { data: gr, error: e3 } = await supabase
+  const { data: gr } = await supabase
     .from("grades")
     .select("exam_name,score,max_score")
     .eq("student_id", student_id)
     .order("created_at", { ascending:false })
     .limit(30);
-  if (e3) throw e3;
-
   const grBody = qs("#grTable tbody"); grBody.innerHTML = "";
   gr.forEach(g=> grBody.appendChild(trRow([g.exam_name, String(g.score), String(g.max_score)])));
 
@@ -93,7 +84,6 @@ async function loadStudentData(student_id){
   try{
     const session = await ensureSession();
 
-    // 이름/역할만 표시 (이메일 없음)
     const prof = await getProfile(session.user.id);
     qs("#miniRole").textContent = prof?.role ? (prof.role === "parent" ? "부모" : "학생") : "미연결";
     qs("#miniName").textContent = prof?.name || "이름 미설정";
