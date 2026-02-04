@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>내 정보 | 학생/부모</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brandMark"></div>
+        <div>
+          <div class="brandTitle">학원 시스템</div>
+          <div class="brandSub">학생/부모</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <div class="navLabel">메뉴</div>
+        <a href="login.html"><span class="dot"></span>로그인/연결</a>
+        <a class="active" href="me.html"><span class="dot"></span>내 정보</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="tabs"><button class="tab active">내 정보</button></div>
+        <div class="topRight">
+          <div class="pill">
+            <div class="small">로그인</div>
+            <div id="who" class="who"></div>
+            <div id="role" class="small"></div>
+          </div>
+          <button class="btn ghost" id="logoutBtn">로그아웃</button>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="card">
+          <div class="cardTitle"><h1>출결/숙제/성적</h1><span class="badge yellow"><strong>조회</strong></span></div>
+
+          <div id="empty" class="note" style="display:none;">
+아직 연결된 학생이 없어.<br/>
+<b>login.html</b>에서 “코드로 연결하기”를 먼저 해줘.
+          </div>
+
+          <div id="dataArea" style="display:none;">
+            <div class="grid2">
+              <div class="card" style="box-shadow:none;">
+                <div class="meta">이번 달 출결(최근 30개 기준)</div>
+                <div class="kv" id="attSummary"></div>
+              </div>
+              <div class="card" style="box-shadow:none;">
+                <div class="meta">최근 성적</div>
+                <div class="kv" id="gradeSummary"></div>
+              </div>
+            </div>
+
+            <hr class="sep"/>
+
+            <div class="meta">출결</div>
+            <table class="table" id="attTable"><thead><tr><th>날짜</th><th>상태</th><th>메모</th></tr></thead><tbody></tbody></table>
+
+            <hr class="sep"/>
+
+            <div class="meta">숙제</div>
+            <table class="table" id="hwTable"><thead><tr><th>마감</th><th>제목</th><th>상태</th></tr></thead><tbody></tbody></table>
+
+            <hr class="sep"/>
+
+            <div class="meta">성적</div>
+            <table class="table" id="grTable"><thead><tr><th>시험</th><th>점수</th><th>만점</th></tr></thead><tbody></tbody></table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="me.js"></script>
+</body>
+</html>

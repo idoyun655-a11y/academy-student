@@ -1,0 +1,2 @@
+export const SUPABASE_URL = "https://ouevtiogorzosjzfgxgr.supabase.co";
+export const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91ZXZ0aW9nb3J6b3NqemZneGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMDczODUsImV4cCI6MjA4NTc4MzM4NX0.Gt8yLImTDjWEsJBJ-3Cw-ncW9KZSe20yYuM34FGFhEc";
