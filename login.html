@@ -1,81 +1,43 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>학생/부모 로그인 | 학원</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brandMark"></div>
-        <div>
-          <div class="brandTitle">학원 시스템</div>
-          <div class="brandSub">학생/부모</div>
-        </div>
-      </div>
-      <nav class="nav">
-        <div class="navLabel">메뉴</div>
-        <a class="active" href="login.html"><span class="dot"></span>로그인/연결</a>
-        <a href="me.html"><span class="dot"></span>내 정보</a>
-      </nav>
-    </aside>
+import { supabase, qs, toast } from "./supabase_client.js";
 
-    <main class="main">
-      <header class="topbar">
-        <div class="tabs"><button class="tab active">로그인</button></div>
-        <div class="topRight">
-          <span class="badge yellow"><strong>조회</strong> · 학생/부모</span>
-        </div>
-      </header>
+// ✅ 이메일 없이: 버튼 누르면 익명 계정 생성(자동 가입)
+async function ensureAnonSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) return session;
 
-      <section class="content">
-        <div class="card">
-          <div class="cardTitle">
-            <h1>로그인 / 회원가입</h1>
-            <span class="badge"><strong>Supabase</strong></span>
-          </div>
+  const { data, error } = await supabase.auth.signInAnonymously();
+  if (error) throw error;
+  return data.session;
+}
 
-          <div class="grid2">
-            <div><label class="label">이메일</label><input id="email" class="input" placeholder="you@example.com" /></div>
-            <div><label class="label">비밀번호</label><input id="pw" class="input" type="password" /></div>
-          </div>
-          <div class="row">
-            <button class="btn" id="loginBtn">로그인</button>
-            <button class="btn ghost" id="signupBtn">회원가입</button>
-          </div>
+qs("#linkBtn").addEventListener("click", async () => {
+  try {
+    // 1) 익명 로그인(자동 가입)
+    await ensureAnonSession();
 
-          <hr class="sep"/>
+    // 2) 코드로 연결
+    const p_role = qs("#role").value;      // student / parent
+    const p_name = qs("#name").value.trim();
+    const p_code = qs("#code").value.trim();
 
-          <div class="cardTitle">
-            <h1>처음이면: 코드로 연결</h1>
-            <span class="badge yellow"><strong>필수</strong></span>
-          </div>
+    if (!p_name) return toast("이름 입력!");
+    if (!p_code) return toast("코드 입력!");
 
-          <div class="grid2">
-            <div>
-              <label class="label">역할</label>
-              <select id="role" class="input">
-                <option value="student">학생</option>
-                <option value="parent">부모</option>
-              </select>
-            </div>
-            <div><label class="label">이름</label><input id="name" class="input" placeholder="이름" /></div>
-          </div>
+    const { error } = await supabase.rpc("redeem_access_code", { p_code, p_role, p_name });
+    if (error) throw error;
 
-          <label class="label">선생님이 준 연결 코드</label>
-          <input id="code" class="input" placeholder="예: K7D2Q9PZ" />
+    toast("연결 완료!");
+    location.href = "me.html";
+  } catch (e) {
+    toast(e.message || String(e));
+  }
+});
 
-          <div class="row"><button class="btn" id="linkBtn">코드로 연결하기</button></div>
-
-          <div class="note">연결 완료 후 me.html에서 출결/숙제/성적을 확인할 수 있어.</div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <script type="module" src="login.js"></script>
-</body>
-</html>
+// (선택) 이미 세션이 있고 연결된 상태면 바로 내정보로
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    // 그냥 me로 보내도 됨 (연결 안 됐으면 me에서 안내 뜸)
+    // location.href = "me.html";
+  }
+})();
